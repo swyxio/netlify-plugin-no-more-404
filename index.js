@@ -16,7 +16,7 @@ module.exports = function netlify404nomore(pluginConfig) {
   return {
     name: '@netlify/plugin-no-more-404',
     /* index html files preDeploy */
-    preDeploy: async ({ constants }) => {
+    onPreDeploy: async ({ constants }) => {
       // console.log({ opts })
       const { CACHE_DIR, BUILD_DIR } = constants // where we start from
 
