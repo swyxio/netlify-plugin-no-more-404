@@ -93,19 +93,24 @@ module.exports = function netlify404nomore(conf) {
             //  negative: false,
             //  conditions: {},
             //  exceptions: {} }
-            if (debug) {
-              console.log({
-                BUILD_DIR,
-                prevPath,
-                relative: path.relative(BUILD_DIR, prevPath),
-                match
-              });
-            }
-            const toPath1 = path.join(BUILD_DIR, match.to + '.html');
+            const toPath1 = path.join(
+              BUILD_DIR,
+              match.to.endsWith('.html') ? match.to : match.to + '.html' // deal with redirects that specify .html
+            );
             const toPath2 = path.join(
               BUILD_DIR,
               match.to + (match.to.endsWith('index.html') ? '' : '/index.html')
             );
+            if (debug) {
+              console.log({
+                BUILD_DIR,
+                prevPath,
+                toPath1,
+                toPath2,
+                relative: path.relative(BUILD_DIR, prevPath),
+                match
+              });
+            }
             if (fs.existsSync(toPath1) || fs.existsSync(toPath2)) {
               // exists! no longer need to check for broken links
             } else {
@@ -152,7 +157,8 @@ module.exports = function netlify404nomore(conf) {
               `${chalk.red(
                 '@netlify/plugin-no-more-404:'
               )}: can't find ${chalk.cyan(
-                path.relative(BUILD_DIR, ird)
+                // path.relative(BUILD_DIR, ird)
+                ird
               )}, which redirects rely on`
             );
           });
