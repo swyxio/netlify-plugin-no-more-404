@@ -93,6 +93,14 @@ module.exports = function netlify404nomore(conf) {
             //  negative: false,
             //  conditions: {},
             //  exceptions: {} }
+            if (debug) {
+              console.log({
+                BUILD_DIR,
+                prevPath,
+                relative: path.relative(BUILD_DIR, prevPath),
+                match
+              });
+            }
             const toPath1 = path.join(BUILD_DIR, match.to + '.html');
             const toPath2 = path.join(
               BUILD_DIR,
@@ -160,7 +168,11 @@ module.exports = function netlify404nomore(conf) {
                   invalidRedirectDestinations.length
                 )} redirect destinations were missing`
               );
-            msgs.push(`${chalk.cyan('on404')} is ${chalk.red('error')}`);
+            msgs.push(
+              `netlify-plugin-no-more-404's ${chalk.cyan(
+                'config.on404'
+              )} option is set/default to ${chalk.red('error')}`
+            );
             build.fail(`${msgs.join(' and ')}, terminating build.`);
           }
         }
