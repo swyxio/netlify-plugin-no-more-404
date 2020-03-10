@@ -46,15 +46,20 @@ module.exports = function netlify404nomore(conf) {
       const prevManifest = store.get(cacheKey) || [];
       if (debug) {
         console.log({ prevManifest });
-        console.log({ cwd: process.cwd(), dirname: __dirname });
-        console.log('reading dir');
-        const filesindir = await readDir(path.join(process.cwd()));
-        console.log({ filesindir });
-        const filesindir2 = await readDir(path.join(process.cwd(), '../'));
-        console.log({ filesindir2 });
+        // console.log({ cwd: process.cwd(), dirname: __dirname });
+        // console.log('reading dir');
+        // const filesindir = await readDir(path.join(process.cwd()));
+        // console.log({ filesindir });
+        // const filesindir2 = await readDir(path.join(process.cwd(), '../'));
+        // console.log({ filesindir2 });
       }
+      // check that BUILD_DIR exists
+      if (!fs.existsSync(path.resolve(BUILD_DIR))) {
+        console.error(`Error: BUILD_DIR ${BUILD_DIR} doesn't exist, this plugin will fail to succeed. 
+        Has your build built to a different directory or have you accidentally gitignored your publish folder?`);
+      }
+      // add missing paths for testing
       if (test404plugin) {
-        // add missing paths for testing
         prevManifest.push(path.join(BUILD_DIR, '/path/to/missing.html'));
         prevManifest.push(path.join(BUILD_DIR, '/path/to/missing2.html'));
         prevManifest.push(path.join(BUILD_DIR, '/path/missing3.html'));
@@ -168,7 +173,7 @@ module.exports = function netlify404nomore(conf) {
       // next time, baby
       var items = [...prevManifest, ...newManifest];
       var uniqueItems = Array.from(new Set(items));
-      store.set(`manifest`, uniqueItems);
+      store.set(cacheKey, uniqueItems);
       console.log('html manifest saved for next run');
     }
   };
