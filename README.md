@@ -4,6 +4,10 @@
 
 This build plugin will remember the html files you've built, and either warn or fail your build when you make the next build and accidentally lose some html pages (whether on purpose or intentional). The plugin understands [Netlify redirects](https://docs.netlify.com/routing/redirects/), so you can add a redirect to resolve missing html.
 
+## Demo
+
+https://github.com/sw-yx/netlify-plugin-no-more-404-demo
+
 ## Usage
 
 In the plugins, src, directory, add the path that the assets are in (last line in the yml below)

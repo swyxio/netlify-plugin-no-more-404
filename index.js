@@ -23,10 +23,9 @@ module.exports = function netlify404nomore(conf) {
       constants,
       utils: { build }
     }) => {
-      // console.log({ opts })
       const { CACHE_DIR, BUILD_DIR } = constants; // where we start from
 
-      // kvstore in `${NETLIFY_CACHE_DIR}/${name}.json`
+      // kvstore in `${CACHE_DIR}/${name}.json`
       // we choose to let the user createStore instead of doing it for them
       // bc they may want to set `defaults` and `schema` and `de/serialize`
       const store = new Conf({
@@ -47,6 +46,9 @@ module.exports = function netlify404nomore(conf) {
       const prevManifest = store.get(cacheKey) || [];
       if (debug) {
         console.log({ prevManifest });
+        console.log('reading dir');
+        const filesindir = await readDir(BUILD_DIR);
+        console.log({ filesindir });
       }
       if (test404plugin) {
         // add missing paths for testing
