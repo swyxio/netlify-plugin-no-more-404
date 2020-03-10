@@ -16,6 +16,7 @@ module.exports = function netlify404nomore(conf) {
     /* index html files preDeploy */
     onPostBuild: async ({
       pluginConfig: {
+        debug = false, // send true to make it print out more stuff
         on404 = 'error', // either 'warn' or 'error'
         cacheKey = 'pluginNoMore404Cache' // string - helps to quickly switch to a new cache if a mistake was made
       },
@@ -33,7 +34,20 @@ module.exports = function netlify404nomore(conf) {
         configName: 'netlify-plugin-no-more-404'
       });
 
+      if (debug) {
+        if (fs.existsSync(store.path)) {
+          console.log('here are the raw contents of store.path');
+          console.log(fs.readFileSync(store.path, { encoding: 'utf8' }));
+        } else {
+          console.warn(
+            `no store found at ${store.path}, will be starting from scratch`
+          );
+        }
+      }
       const prevManifest = store.get(cacheKey) || [];
+      if (debug) {
+        console.log({ prevManifest });
+      }
       if (test404plugin) {
         // add missing paths for testing
         prevManifest.push(path.join(BUILD_DIR, '/path/to/missing.html'));
