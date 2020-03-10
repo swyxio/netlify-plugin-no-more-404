@@ -46,8 +46,9 @@ module.exports = function netlify404nomore(conf) {
       const prevManifest = store.get(cacheKey) || [];
       if (debug) {
         console.log({ prevManifest });
+        console.log({ cwd: process.cwd(), dirname: __dirname });
         console.log('reading dir');
-        const filesindir = await readDir(BUILD_DIR);
+        const filesindir = await readDir(path.join(process.cwd(), BUILD_DIR));
         console.log({ filesindir });
       }
       if (test404plugin) {
@@ -159,7 +160,7 @@ module.exports = function netlify404nomore(conf) {
       }
 
       let newManifest = [];
-      newManifest = await walk(BUILD_DIR);
+      newManifest = await walk(path.join(process.cwd(), BUILD_DIR));
       newManifest = newManifest.filter((x) => x.endsWith('.html'));
       // honestly we can log out the new and deleted pages as well if we wish
       // next time, baby
