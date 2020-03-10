@@ -26,5 +26,13 @@
   "devDependencies": {
     "auto-changelog": "^1.16.2",
     "gh-release": "^3.5.0"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sw-yx/netlify-plugin-no-more-404.git"
+  },
+  "bugs": {
+    "url": "https://github.com/sw-yx/netlify-plugin-no-more-404/issues"
+  },
+  "homepage": "https://github.com/sw-yx/netlify-plugin-no-more-404#readme"
 }
