@@ -80,7 +80,8 @@ module.exports = function netlify404nomore(conf) {
         for (let prevPath of prevManifest) {
           const match = await matchRules(
             path.relative(BUILD_DIR, prevPath),
-            BUILD_DIR
+            BUILD_DIR,
+            debug
           );
           if (match) {
             // match is an object that looks like
