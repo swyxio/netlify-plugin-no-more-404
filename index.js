@@ -48,8 +48,10 @@ module.exports = function netlify404nomore(conf) {
         console.log({ prevManifest });
         console.log({ cwd: process.cwd(), dirname: __dirname });
         console.log('reading dir');
-        const filesindir = await readDir(path.join(process.cwd(), BUILD_DIR));
+        const filesindir = await readDir(path.join(process.cwd()));
         console.log({ filesindir });
+        const filesindir2 = await readDir(path.join(process.cwd(), '../'));
+        console.log({ filesindir2 });
       }
       if (test404plugin) {
         // add missing paths for testing
