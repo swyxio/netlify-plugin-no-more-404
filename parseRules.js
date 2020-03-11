@@ -28,6 +28,8 @@ function parseRules(projectDir, publishDir) {
       )
     );
   }
+  // todo: parse yaml as well
+
   return rules;
 }
 

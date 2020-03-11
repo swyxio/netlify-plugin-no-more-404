@@ -43,7 +43,7 @@ On subsequent runs:
  - By default we fail your build if a missing path is found.
  - If no issues found, we save a new manifest to cache for the next run.
 
-As far as we know, this cache is not cleared when you choose "clear cache and redeploy" in the Netlify UI.
+This cache is cleared when you "clear cache and deploy site" in the Netlify UI - I dont know how to get around this yet.
 
 You can see the [/tests](/tests) folder for a definitive guide on what we test against.
 
@@ -53,7 +53,9 @@ You can see the [/tests](/tests) folder for a definitive guide on what we test a
 
 WE ARE SEEKING MAINTAINERS. I probably wont have time to attend to this full-time.
 
+- read Netlify.yml
 - Local (Netlify Dev) testing as a prepush script?
+- persist through "clear cache and deploy site".
 - Maybe exhaustively check [netlify.toml redirect conditions](https://docs.netlify.com/routing/redirects/#syntax-for-the-netlify-configuration-file)?
 - An option for graceful downgrade when some paths are moved to serverless or clientside rendering (right now you have to bump cacheKey to reindex from scratch)
 - We could add a `preserveBuildIds` config:
