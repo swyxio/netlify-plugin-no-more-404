@@ -4,9 +4,9 @@ const redirector = require('netlify-redirector');
 
 module.exports = matchRules;
 // https://github.com/netlify/cli/blob/0d183f0d0d44c0f6367fdb5e74d41821958da1d0/src/utils/rules-proxy.js#L90-L118
-async function matchRules(relativeUrl, projectDir, rules) {
+async function matchRules(relativeUrl, rules) {
   // located inside matchRules so as to pass debug in
-  const getMatcher = (projectDir) => {
+  const getMatcher = () => {
     if (rules.length) {
       // // spa redirect
       // .filter(
@@ -30,7 +30,7 @@ async function matchRules(relativeUrl, projectDir, rules) {
     });
   };
 
-  return getMatcher(projectDir).then((matcher) => {
+  return getMatcher().then((matcher) => {
     const reqUrl = new url.URL(relativeUrl, 'http://temp/');
     // const cookieValues = cookie.parse(req.headers.cookie || '')
     // const headers = {

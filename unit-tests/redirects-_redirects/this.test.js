@@ -1,14 +1,3 @@
-/**
- *
- * DESCRIPTION OF TEST
- *
- *
- * this basic test has a file in manifest.json and nothing in /dist
- * should identify missing file
- *
- *
- */
-
 const fs = require('fs');
 const path = require('path');
 
@@ -19,21 +8,22 @@ const publishDirPath = path.join(__dirname, 'dist');
 const projectDirPath = __dirname;
 
 // debug
-const DEBUG = true;
-if (DEBUG) {
-  console.log({ publishDirPath, manifest });
-}
+// console.log({ publishDirPath, manifest });
 
 // actual test
 const pluginCore = require('../../pluginCore.js');
 test('missing file but has redirect covering it', async () => {
-  const { missingFiles, invalidRedirectDestinations } = await pluginCore({
+  const { missingPaths, invalidRedirectDestinations } = await pluginCore({
+    projectDirPath,
     publishDirPath,
-    manifest
+    manifest,
+    debugMode: false, // to future readers - turn this true to make pluginCore log out more stuff
+    testMode: true
   });
-  expect(missingFiles).toEqual(
-    ['/index.html'].map((x) => path.join('/opt/build/repo/dist', x))
-  );
+  if (missingPaths.length > 0) {
+    console.log(missingPaths);
+  }
+  expect(missingPaths.length).toEqual(0);
   expect(invalidRedirectDestinations.length).toEqual(0);
 });
 
