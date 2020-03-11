@@ -4,7 +4,9 @@
   "description": "fail netlify build if html goes missing with no redirects",
   "main": "index.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "version": "yarn test && auto-changelog -p --template keepachangelog && git add CHANGELOG.md",
+    "prepublishOnly": "git push && git push --tags && gh-release"
   },
   "keywords": [
     "link-checking",
