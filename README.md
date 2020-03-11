@@ -23,7 +23,7 @@ build:
 plugins:
   - package: netlify-plugin-no-more-404
     config:
-      debug: true
+      debugMode: true # turn off when plugin is stable
       on404: 'error' # either 'warn' or 'error'
       cacheKey: 'anystring' # bump this key any time you need to restart from scratch
       # not yet implemented - compare vs specific build IDs to ensure no regression

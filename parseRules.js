@@ -4,10 +4,10 @@ const path = require('path');
 
 const redirectParser = require('netlify-redirect-parser');
 module.exports = parseRules;
-function parseRules(projectDir) {
+function parseRules(projectDir, publishDir) {
   let rules = [];
 
-  const baseRedirectsPath = path.resolve(projectDir, '_redirects');
+  const baseRedirectsPath = path.resolve(publishDir, '_redirects');
   if (fs.existsSync(baseRedirectsPath)) {
     rules = rules.concat(
       parseFile(
@@ -18,12 +18,16 @@ function parseRules(projectDir) {
     );
   }
 
-  // const baseTOMLPath = path.resolve(projectDir, 'netlify.toml')
-  // if (fs.existsSync(baseTOMLPath)) {
-  //   rules = rules.concat(
-  //     parseFile(redirectParser.parseTomlFormat, 'base netlify.toml', fs.readFileSync(baseTOMLPath, 'utf-8'))
-  //   )
-  // }
+  const baseTOMLPath = path.resolve(projectDir, 'netlify.toml');
+  if (fs.existsSync(baseTOMLPath)) {
+    rules = rules.concat(
+      parseFile(
+        redirectParser.parseTomlFormat,
+        'base netlify.toml',
+        fs.readFileSync(baseTOMLPath, 'utf-8')
+      )
+    );
+  }
   return rules;
 }
 

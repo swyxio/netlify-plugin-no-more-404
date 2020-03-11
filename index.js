@@ -3,10 +3,8 @@ const fs = require('fs');
 const { promisify } = require('util');
 
 const readDir = promisify(fs.readdir);
-const chalk = require('chalk');
 const Conf = require('conf'); // for simple kv store
 
-const matchRules = require('./matchRules');
 // const test404plugin = true // toggle this off for production
 const test404plugin = false; // toggle this off for production
 
@@ -16,7 +14,7 @@ module.exports = function netlify404nomore(conf) {
     /* index html files preDeploy */
     onPostBuild: async ({
       pluginConfig: {
-        debug = false, // send true to make it print out more stuff
+        debugMode = false, // send true to make it print out more stuff
         on404 = 'error', // either 'warn' or 'error'
         cacheKey = 'pluginNoMore404Cache' // string - helps to quickly switch to a new cache if a mistake was made
       },
@@ -33,7 +31,7 @@ module.exports = function netlify404nomore(conf) {
         configName: 'netlify-plugin-no-more-404'
       });
 
-      if (debug) {
+      if (debugMode) {
         if (fs.existsSync(store.path)) {
           console.log('here are the raw contents of store.path');
           console.log(fs.readFileSync(store.path, { encoding: 'utf8' }));
@@ -44,7 +42,7 @@ module.exports = function netlify404nomore(conf) {
         }
       }
       const prevManifest = store.get(cacheKey) || [];
-      if (debug) {
+      if (debugMode) {
         console.log({ prevManifest });
         // console.log({ cwd: process.cwd(), dirname: __dirname });
         // console.log('reading dir');
@@ -74,114 +72,29 @@ module.exports = function netlify404nomore(conf) {
        *
        */
       if (prevManifest.length) {
-        // deal with redirects
-        let prevManifestPostRedirects = [];
-        let invalidRedirectDestinations = [];
-        for (let prevPath of prevManifest) {
-          const match = await matchRules(
-            path.relative(BUILD_DIR, prevPath),
-            BUILD_DIR,
-            debug
-          );
-          if (match) {
-            // match is an object that looks like
-            //  { from: '/path/to/*',
-            //  to: '/blog/first',
-            //  host: '',
-            //  scheme: '',
-            //  status: 301,
-            //  force: false,
-            //  negative: false,
-            //  conditions: {},
-            //  exceptions: {} }
-            const toPath1 = path.join(
-              BUILD_DIR,
-              match.to.endsWith('.html') ? match.to : match.to + '.html' // deal with redirects that specify .html
-            );
-            const toPath2 = path.join(
-              BUILD_DIR,
-              match.to + (match.to.endsWith('index.html') ? '' : '/index.html')
-            );
-            if (debug) {
-              console.log({
-                BUILD_DIR,
-                prevPath,
-                toPath1,
-                toPath2,
-                relative: path.relative(BUILD_DIR, prevPath),
-                match
-              });
-            }
-            if (fs.existsSync(toPath1) || fs.existsSync(toPath2)) {
-              // exists! no longer need to check for broken links
-            } else {
-              // the redirect itself is invalid!
-              console.error(
-                `Redirect from ${chalk.yellow(match.from)} to ${chalk.yellow(
-                  match.to
-                )} directs to a missing page... please check!`
-              );
-              invalidRedirectDestinations.push(match.to);
-            }
-          } else {
-            prevManifestPostRedirects.push(prevPath);
-          }
-        }
-
-        // checking previous manifests
-        // console.log({ prevManifestPostRedirects })
-        let missingFiles = [];
-        prevManifestPostRedirects.forEach((filePath) => {
-          if (!fs.existsSync(filePath)) {
-            missingFiles.push(filePath);
-          }
+        const { missingFiles, invalidRedirectDestinations } = await pluginCore({
+          BUILD_DIR,
+          manifest,
+          redirects
         });
-        if (missingFiles.length || invalidRedirectDestinations.length) {
-          missingFiles.forEach((mf) => {
-            console.error(
-              `${chalk.red(
-                '@netlify/plugin-no-more-404:'
-              )}: can't find ${chalk.cyan(
-                path.relative(BUILD_DIR, mf)
-              )} which existed in previous build`
-            );
-          });
-          if (missingFiles.length) {
-            console.log(
-              `Missing HTML files detected. If you intentionally changed URL structure, you should set up redirects: ${chalk.cyan(
-                'https://url.netlify.com/B1qkCwqOr'
-              )}`
-            );
-          }
-          invalidRedirectDestinations.forEach((ird) => {
-            console.error(
-              `${chalk.red(
-                '@netlify/plugin-no-more-404:'
-              )}: can't find ${chalk.cyan(
-                // path.relative(BUILD_DIR, ird)
-                ird
-              )}, which redirects rely on`
-            );
-          });
-          if (on404 === 'error') {
-            const msgs = [];
-            if (missingFiles.length)
-              msgs.push(
-                `${chalk.red.bold(missingFiles.length)} files were missing`
-              );
-            if (invalidRedirectDestinations.length)
-              msgs.push(
-                `${chalk.red.bold(
-                  invalidRedirectDestinations.length
-                )} redirect destinations were missing`
-              );
+        if (on404 === 'error') {
+          const msgs = [];
+          if (missingFiles.length)
             msgs.push(
-              `netlify-plugin-no-more-404's ${chalk.cyan(
-                'config.on404'
-              )} option is set/default to ${chalk.red('error')}`
+              `${chalk.red.bold(missingFiles.length)} files were missing`
             );
-            build.fail(`${msgs.join(' and ')}, terminating build.`);
-          }
+          if (invalidRedirectDestinations.length)
+            msgs.push(
+              `${chalk.red.bold(
+                invalidRedirectDestinations.length
+              )} redirect destinations were missing`
+            );
+          msgs.push(
+            `netlify-plugin-no-more-404's ${chalk.cyan(
+              'config.on404'
+            )} option is set/default to ${chalk.red('error')}`
+          );
+          build.fail(`${msgs.join(' and ')}, terminating build.`);
         }
       }
 
@@ -192,6 +105,10 @@ module.exports = function netlify404nomore(conf) {
       // next time, baby
       var items = [...prevManifest, ...newManifest];
       var uniqueItems = Array.from(new Set(items));
+      if (debugMode) {
+        console.log(`saving manifest for next time! to cacheKey ${cacheKey}`);
+        console.log({ uniqueItems });
+      }
       store.set(cacheKey, uniqueItems);
       console.log('html manifest saved for next run');
     }
