@@ -13,9 +13,7 @@ https://github.com/sw-yx/netlify-plugin-no-more-404-demo
 
 ## Usage
 
-In the plugins, src, directory, add the path that the assets are in (last line in the yml below)
-
-`netlify.yml`
+Specify the plugin in your `netlify.yml`. No config is required but we show the default options here.
 
 ```yml
 build:
