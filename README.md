@@ -2,7 +2,8 @@
 
 This build plugin will remember the html files you've built, and either warn or fail your build when you make the next build and accidentally lose some html pages (whether on purpose or intentional). The plugin understands [Netlify redirects](https://docs.netlify.com/routing/redirects/), so you can add a redirect to resolve missing html.
 
-> Note: this is different than https://github.com/munter/netlify-plugin-checklinks which checks the validity of *outgoing* links
+> Note: this is different than https://github.com/munter/netlify-plugin-checklinks which checks the validity of *outgoing* links.
+>
 > this plugin focuses entirely on whether **your own internal URL structure** has been preserved by some combination of your build process (it is agnostic of SSG/framework) and Netlify Redirects 
 
 Because this plugin is SSG/framework agnostic, it can be a great aid for migrating between frameworks.
