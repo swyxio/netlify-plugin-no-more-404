@@ -11,6 +11,7 @@
   "keywords": [
     "link-checking",
     "netlify",
+    "netlify-plugin",
     "build",
     "plugins"
   ],
