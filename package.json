@@ -1,6 +1,6 @@
 {
   "name": "netlify-plugin-no-more-404",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "description": "fail netlify build if html goes missing with no redirects",
   "main": "index.js",
   "scripts": {
