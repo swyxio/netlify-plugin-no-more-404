@@ -14,20 +14,23 @@ https://github.com/sw-yx/netlify-plugin-no-more-404-demo
 
 ## Usage
 
-Specify the plugin in your `netlify.yml`. No config is required but we show the default options here.
+To install, add the following lines to your `netlify.toml` file:
 
-```yml
-build:
-  publish: build # NOTE: you should have a publish folder specified here for this to work
-  command: echo "your build command goes here"
-  NODE_ENV: 10.15.3
+```toml
+[[plugins]]
+package = "netlify-plugin-no-more-404"
 
-plugins:
-  - package: netlify-plugin-no-more-404
-    config: # all config is optional, we just show you the defaults below
-      on404: 'error' # either 'warn' or 'error'
-      cacheKey: 'MyCacheKey' # change this key to a new one any time you need to restart from scratch
-      debugMode: false # (for development) turn true for extra diagnostic logging
+  # all inputs are optional, we just show you the defaults below
+  [plugins.inputs]
+  
+  # either "warn" or "error"
+  on404 = "error" 
+  
+  # change this key to a new one any time you need to restart from scratch
+  cacheKey = "MyCacheKey"
+  
+  # (for development) turn true for extra diagnostic logging
+  debugMode = false
 ```
 
 ## What It Does
@@ -52,7 +55,6 @@ You can see the [/tests](/tests) folder for a definitive guide on what we test a
 
 WE ARE SEEKING MAINTAINERS. I probably wont have time to attend to this full-time.
 
-- read redirects from Netlify.yml (right now only reads from Netlify.toml)
 - Local (Netlify Dev) testing as a prepush script?
 - persist through "clear cache and deploy site".
 - Maybe exhaustively check [netlify.toml redirect conditions](https://docs.netlify.com/routing/redirects/#syntax-for-the-netlify-configuration-file)?
