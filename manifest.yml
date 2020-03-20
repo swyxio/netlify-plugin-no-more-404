@@ -1,1 +1,5 @@
 name: netlify-plugin-no-more-404
+inputs:
+  - name: debugMode
+  - name: on404
+  - name: cacheKey
