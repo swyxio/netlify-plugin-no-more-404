@@ -97,7 +97,7 @@ module.exports = function netlify404nomore(conf) {
                 'config.on404'
               )} option is set/default to ${chalk.red('error')}`
             );
-            build.fail(`${buildFailMsgs.join(' and ')}, terminating build.`);
+            build.failBuild(`${buildFailMsgs.join(' and ')}, terminating build.`);
           }
         }
       }
