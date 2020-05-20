@@ -18,7 +18,7 @@ test('plugin fixture works', async () => {
     constants: {
       // have to mock this too
       CACHE_DIR: 'fixtures-cache', // this is gitignored but check it out
-      BUILD_DIR: 'fixtures/dist'
+      PUBLISH_DIR: 'fixtures/dist'
     },
     utils: {
       build: {
