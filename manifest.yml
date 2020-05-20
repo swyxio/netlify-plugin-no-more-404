@@ -1,5 +1,11 @@
 name: netlify-plugin-no-more-404
 inputs:
   - name: debugMode
+    description: (for development) turn true for extra diagnostic logging
+    default: false
   - name: on404
+    description: either "warn" or "error"
+    default: error
   - name: cacheKey
+    description: change this key to a new one any time you need to restart from scratch
+    default: pluginNoMore404Cache
