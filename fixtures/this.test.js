@@ -4,7 +4,7 @@ const path = require('path');
 // actual test
 const netlifyPlugin = require('../index.js');
 test('plugin fixture works', async () => {
-  const initPlugin = netlifyPlugin();
+  const initPlugin = netlifyPlugin;
   console.log(`running ${initPlugin.name}`);
   // mock everything from netlify build
   let failMessages = [];

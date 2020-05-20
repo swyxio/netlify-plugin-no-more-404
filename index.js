@@ -9,8 +9,7 @@ const Conf = require('conf'); // for simple kv store
 // const test404plugin = true // toggle this off for production
 const test404plugin = false; // toggle this off for production
 
-module.exports = function netlify404nomore(conf) {
-  return {
+module.exports = {
     /* index html files preDeploy */
     onPostBuild: async ({
       inputs: {
@@ -128,7 +127,6 @@ module.exports = function netlify404nomore(conf) {
         console.log('html manifest saved for next run');
       }
     }
-  };
 };
 
 // recursive crawl to get a list of filepaths
