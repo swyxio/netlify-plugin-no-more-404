@@ -10,7 +10,7 @@ test('plugin fixture works', async () => {
   let failMessages = [];
   await initPlugin.onPostBuild({
     // from netlify.yml
-    pluginConfig: {
+    inputs: {
       debugMode: false,
       on404: 'error',
       cacheKey: 'pluginNoMore404Cache2'

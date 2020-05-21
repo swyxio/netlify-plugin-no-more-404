@@ -14,7 +14,7 @@ module.exports = function netlify404nomore(conf) {
     name: 'netlify-plugin-no-more-404',
     /* index html files preDeploy */
     onPostBuild: async ({
-      pluginConfig: {
+      inputs: {
         debugMode = false, // send true to make it print out more stuff
         on404 = 'error', // either 'warn' or 'error'
         cacheKey = 'pluginNoMore404Cache' // string - helps to quickly switch to a new cache if a mistake was made
