@@ -22,7 +22,7 @@ module.exports = function netlify404nomore(conf) {
       constants,
       utils: { build }
     }) => {
-      const { CACHE_DIR, BUILD_DIR } = constants; // from netlify build or testing fixture
+      const { CACHE_DIR, PUBLISH_DIR } = constants; // from netlify build or testing fixture
 
       // kvstore in `${CACHE_DIR}/${name}.json`
       // we choose to let the user createStore instead of doing it for them
@@ -52,16 +52,16 @@ module.exports = function netlify404nomore(conf) {
         // const filesindir2 = await readDir(path.join(process.cwd(), '../'));
         // console.log({ filesindir2 });
       }
-      // check that BUILD_DIR exists
-      if (!fs.existsSync(path.resolve(BUILD_DIR))) {
-        console.error(`Error: BUILD_DIR ${BUILD_DIR} doesn't exist, this plugin will fail to succeed. 
+      // check that PUBLISH_DIR exists
+      if (!fs.existsSync(path.resolve(PUBLISH_DIR))) {
+        console.error(`Error: PUBLISH_DIR ${PUBLISH_DIR} doesn't exist, this plugin will fail to succeed.
         Has your build built to a different directory or have you accidentally gitignored your publish folder?`);
       }
       // add missing paths for testing
       if (test404plugin) {
-        prevManifest.push(path.join(BUILD_DIR, '/path/to/missing.html'));
-        prevManifest.push(path.join(BUILD_DIR, '/path/to/missing2.html'));
-        prevManifest.push(path.join(BUILD_DIR, '/path/missing3.html'));
+        prevManifest.push(path.join(PUBLISH_DIR, '/path/to/missing.html'));
+        prevManifest.push(path.join(PUBLISH_DIR, '/path/to/missing2.html'));
+        prevManifest.push(path.join(PUBLISH_DIR, '/path/missing3.html'));
       }
 
       /**
@@ -76,7 +76,7 @@ module.exports = function netlify404nomore(conf) {
       if (prevManifest.length) {
         const { missingPaths, invalidRedirectDestinations } = await pluginCore({
           projectDirPath: process.cwd(),
-          publishDirPath: BUILD_DIR,
+          publishDirPath: PUBLISH_DIR,
           manifest: prevManifest,
           debugMode
         });
@@ -103,12 +103,12 @@ module.exports = function netlify404nomore(conf) {
       }
       if (buildFailMsgs.length === 0) {
         let newManifest = [];
-        newManifest = await walk(path.join(process.cwd(), BUILD_DIR));
+        newManifest = await walk(path.join(process.cwd(), PUBLISH_DIR));
         newManifest = newManifest
           .filter((x) => x.endsWith('.html'))
           .map((x) => {
             let shortPath = path.relative(
-              path.join(process.cwd(), BUILD_DIR),
+              path.join(process.cwd(), PUBLISH_DIR),
               x
             );
             if (shortPath.endsWith('index.html'))
