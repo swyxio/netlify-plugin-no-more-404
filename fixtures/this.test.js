@@ -23,7 +23,7 @@ test('plugin fixture works', async () => {
     utils: {
       build: {
         // have to mock this too
-        fail(message) {
+        failBuild(message) {
           failMessages.push(message);
         }
       }
