@@ -11,7 +11,6 @@ const test404plugin = false; // toggle this off for production
 
 module.exports = function netlify404nomore(conf) {
   return {
-    name: 'netlify-plugin-no-more-404',
     /* index html files preDeploy */
     onPostBuild: async ({
       inputs: {
